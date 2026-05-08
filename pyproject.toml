@@ -1,0 +1,20 @@
+[project]
+name = "discover-music"
+version = "0.1.0"
+description = "Local data preparation and recommendation system for discoverMusic"
+requires-python = ">=3.10"
+
+dependencies = [
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "pyarrow",
+    "python-dotenv"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

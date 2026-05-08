@@ -1,0 +1,17 @@
+pyproject.toml
+src/discover_music/__init__.py
+src/discover_music.egg-info/PKG-INFO
+src/discover_music.egg-info/SOURCES.txt
+src/discover_music.egg-info/dependency_links.txt
+src/discover_music.egg-info/requires.txt
+src/discover_music.egg-info/top_level.txt
+src/discover_music/data/__init__.py
+src/discover_music/data/clean.py
+src/discover_music/data/features.py
+src/discover_music/data/load.py
+src/discover_music/data/split_tables.py
+src/discover_music/data/validate.py
+src/discover_music/pipelines/__init__.py
+src/discover_music/pipelines/prepare_data.py
+src/discover_music/utils/__init__.py
+src/discover_music/utils/paths.py
