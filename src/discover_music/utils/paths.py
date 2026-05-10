@@ -7,3 +7,10 @@ DATA_DIR = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
+LOCAL_DATA_DIR = DATA_DIR / "local"
+TRACKS_PATH = PROCESSED_DATA_DIR / "tracks.parquet"
+RECOMMENDATION_FEATURES_PATH = PROCESSED_DATA_DIR / "recommendation_features.parquet"
+USER_RATINGS_PATH = LOCAL_DATA_DIR / "user_ratings.csv"
+
+def ensure_local_data_dir() -> None:
+    LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
