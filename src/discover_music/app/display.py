@@ -1,7 +1,7 @@
 import pandas as pd
 
 TITLE_COLUMNS = ["track_name", "title", "name", "song_name"]
-ARTIST_COLUMNS = ["artist_name", "artist", "artists"]
+ARTIST_COLUMNS = ["track_artist","artist_name", "artist", "artists"]
 
 def _get_first_available_value(row: pd.Series, possible_columns: list[str]) -> str:
     #helper that just returns specific columns of a given row based on specified column names
