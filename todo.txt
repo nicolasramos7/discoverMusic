@@ -1,0 +1,6 @@
+1. Create a universal test that will show model accuracy/growth
+2. Start implementing new features (ideas below), conduct universal test after each feature update
+
+Ideas:
+- Create a numeral version of genres (scaled) to account in features
+- Current ranges of 4-5 and 1-2 and 3 is too broad, make 5 affect more than 4 and 1 more than 2, etc.
