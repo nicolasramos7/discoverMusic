@@ -68,8 +68,8 @@ Requires Python 3.10+. Dependencies (pandas, numpy, scikit-learn, pyarrow, pytho
 
 ---
 
-## The main goal: a universal test to track performance
-The reason this project exists is not just to make recommendations, it's to be able to **measure whether each change actually makes them better.** Rather than eyeballing results, I'm building a repeatable evaluation suite that produces the same benchmark before and after every new feature, so improvement (or regression) is a number I can point to.
+## Currently being developed: a universal test to track performance
+This project is being made to learn Python for data science, as I add new features, I want to be able to track how results become better or not. Rather than eyeballing results, I'm building a repeatable evaluation suite that produces the same benchmark before and after every new feature, so improvement (or regression) is a number I can point to.
 
 The approach being built out in `src/discover_music/evaluation/`:
 
