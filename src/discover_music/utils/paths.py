@@ -14,6 +14,7 @@ USER_RATINGS_PATH = LOCAL_DATA_DIR / "user_ratings.csv"
 EVAL_DIR          = DATA_DIR / "eval"
 PERSONAS_DIR      = EVAL_DIR / "personas"
 EVAL_RESULTS_DIR  = EVAL_DIR / "results"
+TRACK_PLAYLIST_PATH = PROCESSED_DATA_DIR / "track_playlist.parquet"
 
 
 def ensure_local_data_dir() -> None:
