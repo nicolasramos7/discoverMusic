@@ -15,16 +15,8 @@ from discover_music.evaluation import metrics, baselines
 KS = [10, 20, 50]
 
 def rank_with_persona(profile_ids, negative_ids, candidates):
-    """
-    Temporarily writes a persona's ratings to user_ratings.csv, runs the real
-    model, and always restores the original ratings file afterwards.
-    Returns the model's full ranked list of track IDs (best first).
-    """
-    # make sure data/local/ exists before writing to it
+    #impersonating a user, safely
     ensure_local_data_dir()
-
-    # save the real ratings file so we can put it back later
-    # if no file exists yet, backup is None
     backup = load_ratings() if USER_RATINGS_PATH.exists() else None
 
     try:
@@ -32,17 +24,17 @@ def rank_with_persona(profile_ids, negative_ids, candidates):
         rows = ([{"track_id": t, "rating": 5} for t in profile_ids] +
                 [{"track_id": t, "rating": 1} for t in negative_ids])
 
-        # overwrite the ratings file, the model now sees these as the user's ratings
+        #overwrite the ratings file, the model now sees these as the user's ratings
         pd.DataFrame(rows).to_csv(USER_RATINGS_PATH, index=False)
 
-        # run the real model; n = len(candidates) returns the FULL ranking
+        #run the real model; n = len(candidates) returns the FULL ranking
         ranked = get_recommended_songs(n=len(candidates))
 
-        # return the ordered track IDs as a plain list
+        #return the ordered track IDs as a plain list
         return ranked["track_id"].tolist()
 
     finally:
-        # this ALWAYS runs, even if the model call above crashes
+        #this runs, even if the model call above crashes
         if backup is not None:
             # put the original ratings back exactly as they were
             backup.to_csv(USER_RATINGS_PATH, index=False)
@@ -52,18 +44,13 @@ def rank_with_persona(profile_ids, negative_ids, candidates):
 
 
 def score(ranked_ids, relevant_ids):
-    """
-    Computes NDCG and Recall at every k for one (ranking, answer key) pair.
-    Returns a flat dict like {"ndcg@10": .., "recall@10": .., "ndcg@20": .., ..}.
-    """
+    #computes NDCG and Recall at every k for one (ranking, answer key) pair.
     return {f"ndcg@{k}":   metrics.ndcg_at_k(ranked_ids, relevant_ids, k)   for k in KS} | \
            {f"recall@{k}": metrics.recall_at_k(ranked_ids, relevant_ids, k) for k in KS}
 
 
 def load_personas():
-    """
-    Reads every persona JSON file from data/eval/personas/ into a list of dicts.
-    """
+    #reads every persona JSON file from data/eval/personas/ into a list of dicts.
     if not PERSONAS_DIR.exists():
         raise FileNotFoundError("No personas found. Run scripts/build_personas.py first.")
 
@@ -75,10 +62,8 @@ def load_personas():
 
 
 def aggregate(rows):
-    """
-    Averages every metric across all personas and computes the A-B gap.
-    Returns mean ± std per metric for the model, both baselines, and the gap.
-    """
+    #averages every metric across all personas and computes the A-B gap.
+    #returns mean ± std per metric for the model, both baselines, and the gap.
     metric_keys = list(rows[0]["model_A"].keys())
     result = {}
 
@@ -105,12 +90,6 @@ def aggregate(rows):
 
 
 def run_eval(seed=42):
-    """
-    Runs the whole evaluation and returns an aggregated results dict.
-    """
-
-    # seeded rng for the random baseline — created ONCE, outside the loop,
-    # so each persona gets a genuinely different shuffle
     rng = np.random.default_rng(seed)
 
     # the universe of all track IDs, loaded once
