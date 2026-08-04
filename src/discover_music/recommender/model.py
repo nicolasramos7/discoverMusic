@@ -93,7 +93,7 @@ def get_recommended_songs(n: int = 10) -> pd.DataFrame: #default 10 if unspecifi
     if user_profile is None:
         return get_random_songs(n=n)    #if user hasnt got a profile, we can select 10 random songs
     
-    feature_columns = get_feature_columns(unrated_candidates)   #get feature columns
+    feature_columns = get_feature_columns(features)   #only the recommendation feature columns (the *_scaled ones), NOT the raw numeric columns that the tracks merge leaks into the candidate pool
 
     ranked_candidates = rank_by_similarity( #rank using similarity.py helper
         user_profile=user_profile,

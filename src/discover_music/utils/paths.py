@@ -15,9 +15,14 @@ EVAL_DIR          = DATA_DIR / "eval"
 PERSONAS_DIR      = EVAL_DIR / "personas"
 EVAL_RESULTS_DIR  = EVAL_DIR / "results"
 TRACK_PLAYLIST_PATH = PROCESSED_DATA_DIR / "track_playlist.parquet"
+PLAYLISTS_PATH      = PROCESSED_DATA_DIR / "playlists.parquet"
 
 
 def ensure_local_data_dir() -> None:
     LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    PERSONAS_DIR.mkdir(parents=True, exist_ok=True)
+    EVAL_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+
+def ensure_eval_dirs() -> None:
     PERSONAS_DIR.mkdir(parents=True, exist_ok=True)
     EVAL_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
