@@ -3,7 +3,7 @@ from discover_music.evaluation.harness import run_eval
 from discover_music.utils.paths import EVAL_RESULTS_DIR, ensure_eval_dirs
 
 def print_summary(results):
-    """Prints a readable table of every metric's mean and std to the terminal."""
+    """Prints a readable table of every metric's mean and std to the terminal"""
     print(f"\n  {'source / metric':<32} {'mean':>8}  {'std':>8}")
     print("  " + "-" * 52)
     for source, metric_dict in results.items():
