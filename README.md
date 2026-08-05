@@ -1,5 +1,7 @@
 # discoverMusic
 
+Model Evaluation Visual: https://docs.google.com/spreadsheets/d/1_s7FJIAhxYbsJlre11CgbsVaAyC-UXva9RU90WzY9MU/edit?gid=0#gid=0
+
 A content-based music recommender built as a personal project to **learn Python with a focus on data analysis**. It takes a ~30k-track Spotify dataset, cleans it into relational tables and a scaled feature matrix, learns your taste from ratings, and recommends new tracks by audio-feature similarity.
 
 The code is written for learning: modules are small and single-purpose, and most lines are commented to explain *why* each pandas / scikit-learn call is there.
