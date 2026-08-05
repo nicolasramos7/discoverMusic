@@ -1,40 +1,52 @@
 import pandas as pd
 
-
 TRACK_ID_COLUMN = "track_id"
 POSITIVE_RATING_THRESHOLD = 4
+NEGATIVE_RATING_THRESHOLD = 2
+
+# profile = alpha·mean(liked) − beta·mean(disliked)
+ALPHA = 1.0
+BETA = 0.5
 
 def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> pd.Series | None:
     if ratings.empty:
         return None
-    
-    positive_ratings = ratings[ratings["rating"] >= POSITIVE_RATING_THRESHOLD].copy()
 
-    if positive_ratings.empty:
-        return None
-    
-    positive_ratings[TRACK_ID_COLUMN] = positive_ratings[TRACK_ID_COLUMN].astype(str)
     features = features.copy()
     features[TRACK_ID_COLUMN] = features[TRACK_ID_COLUMN].astype(str)
 
-    liked_song_features = features[ #get features of liked songs
+    #liked centroid, important bc no likes = no profile
+    positive_ratings = ratings[ratings["rating"] >= POSITIVE_RATING_THRESHOLD].copy()
+    if positive_ratings.empty:
+        return None
+    positive_ratings[TRACK_ID_COLUMN] = positive_ratings[TRACK_ID_COLUMN].astype(str)
+
+    liked_features = features[
         features[TRACK_ID_COLUMN].isin(positive_ratings[TRACK_ID_COLUMN])
-    ].copy()
-
-    if liked_song_features.empty:
-        return None
-    
-    numeric_feature_columns = liked_song_features.select_dtypes(    #get numeric features of liked songs
-        include=["number"]
-    ).columns.tolist()
-
-    numeric_feature_columns = [
-        column for column in numeric_feature_columns if column != TRACK_ID_COLUMN   #remove track_id column
     ]
-
-    if not numeric_feature_columns:
+    if liked_features.empty:
         return None
-    
-    user_profile = liked_song_features[numeric_feature_columns].mean()  #make an average of all liked songs
 
-    return user_profile
+    #use one column list
+    feature_columns = [
+        c for c in liked_features.select_dtypes(include=["number"]).columns
+        if c != TRACK_ID_COLUMN
+    ]
+    if not feature_columns:
+        return None
+
+    liked_centroid = liked_features[feature_columns].mean()
+
+    #disliked centroid, optional: zero vector when there are none
+    negative_ratings = ratings[ratings["rating"] <= NEGATIVE_RATING_THRESHOLD].copy()
+    negative_ratings[TRACK_ID_COLUMN] = negative_ratings[TRACK_ID_COLUMN].astype(str)
+
+    disliked_features = features[
+        features[TRACK_ID_COLUMN].isin(negative_ratings[TRACK_ID_COLUMN])
+    ]
+    if not disliked_features.empty:
+        disliked_centroid = disliked_features[feature_columns].mean()
+    else:
+        disliked_centroid = pd.Series(0.0, index=feature_columns) #zero vector
+
+    return ALPHA * liked_centroid - BETA * disliked_centroid
