@@ -6,7 +6,7 @@ NEGATIVE_RATING_THRESHOLD = 2
 
 # profile = alpha·mean(liked) − beta·mean(disliked)
 ALPHA = 1.0
-BETA = 0.5
+BETA =  0.25
 
 def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> pd.Series | None:
     if ratings.empty:
