@@ -8,7 +8,7 @@ NEGATIVE_RATING_THRESHOLD = 2
 ALPHA = 1.0
 BETA =  0.25
 
-def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> tuple[pd.Series, pd.Series] | tuple[None, None]:
+def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> pd.Series | None:
     if ratings.empty:
         return None, None
 
@@ -50,5 +50,7 @@ def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> tuple[p
         disliked_centroid = pd.Series(0.0, index=feature_columns) #zero vector
 
     profile = ALPHA * liked_centroid - BETA * disliked_centroid
+
     weights = (liked_centroid - disliked_centroid).abs()
+
     return profile, weights
