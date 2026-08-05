@@ -15,14 +15,16 @@ RECOMMENDATION_FEATURES = [
     "track_popularity",
 ]
 
+GENRES = ["edm", "latin", "pop", "r&b", "rap", "rock"]
+GENRE_WEIGHT = 1.0  
+
 def build_recommendation_features(df: pd.DataFrame) -> pd.DataFrame:
 
-    feature_df = df[
-        ["track_id", *RECOMMENDATION_FEATURES]
-    ].copy()    #builds a normalized table version (copy)
+    feature_df = df[["track_id", "playlist_id", "playlist_genre", *RECOMMENDATION_FEATURES]].copy()
 
-    feature_df = feature_df.drop_duplicates(subset=["track_id"])    #remove duplicates based on track_id
-    feature_df = feature_df.dropna(subset=RECOMMENDATION_FEATURES)  #drop NaN entries
+    feature_df = feature_df.sort_values(["track_id", "playlist_id"]) #same deterministic genre selection as the eval.
+    feature_df = feature_df.drop_duplicates(subset=["track_id"])
+    feature_df = feature_df.dropna(subset=RECOMMENDATION_FEATURES)
 
     scaler = StandardScaler()   #create instance of scalar
 
@@ -37,13 +39,14 @@ def build_recommendation_features(df: pd.DataFrame) -> pd.DataFrame:
         index=feature_df.index, #pandas gives DataFrame rows an index, if we drop duplicates, the indexes might not align so we tell it to match indexes to match data
     )
 
-    result = pd.concat( #finally we combine the track ids with the scaled data
-        [
-            feature_df[["track_id"]],
-            scaled_df,
-        ],
-        axis=1, #this means concat horizontally column by column
-    )
+    # fixed category list so every run yields the same 6 columns in the same order,
+    # and unknown/NaN genre -> all-zero row (neutral)
+    genre_series = feature_df["playlist_genre"].where(feature_df["playlist_genre"].isin(GENRES))
+    genre_onehot = pd.get_dummies(
+        genre_series.astype(pd.CategoricalDtype(categories=GENRES)),  # Series keeps its index
+        prefix="genre",
+    ).astype(float) * GENRE_WEIGHT
+
+    result = pd.concat([feature_df[["track_id"]], scaled_df, genre_onehot], axis=1)
 
     return result
-
