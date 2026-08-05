@@ -88,7 +88,7 @@ def get_recommended_songs(n: int = 10) -> pd.DataFrame: #default 10 if unspecifi
     if unrated_candidates.empty:    #if no songs to give, just return empty df
         return unrated_candidates
     
-    user_profile = build_user_profile(ratings, features)    #use method in profile.py
+    user_profile, weights = build_user_profile(ratings, features)    #use method in profile.py
 
     if user_profile is None:
         return get_random_songs(n=n)    #if user hasnt got a profile, we can select 10 random songs
@@ -99,6 +99,7 @@ def get_recommended_songs(n: int = 10) -> pd.DataFrame: #default 10 if unspecifi
         user_profile=user_profile,
         candidates=unrated_candidates,
         feature_columns=feature_columns,
+        weights=weights,
     )
 
     return ranked_candidates.head(n)    #get top 10 using head method in pandas

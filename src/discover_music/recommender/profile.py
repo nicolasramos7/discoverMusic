@@ -8,9 +8,9 @@ NEGATIVE_RATING_THRESHOLD = 2
 ALPHA = 1.0
 BETA =  0.25
 
-def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> pd.Series | None:
+def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> tuple[pd.Series, pd.Series] | tuple[None, None]:
     if ratings.empty:
-        return None
+        return None, None
 
     features = features.copy()
     features[TRACK_ID_COLUMN] = features[TRACK_ID_COLUMN].astype(str)
@@ -18,14 +18,14 @@ def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> pd.Seri
     #liked centroid, important bc no likes = no profile
     positive_ratings = ratings[ratings["rating"] >= POSITIVE_RATING_THRESHOLD].copy()
     if positive_ratings.empty:
-        return None
+        return None, None
     positive_ratings[TRACK_ID_COLUMN] = positive_ratings[TRACK_ID_COLUMN].astype(str)
 
     liked_features = features[
         features[TRACK_ID_COLUMN].isin(positive_ratings[TRACK_ID_COLUMN])
     ]
     if liked_features.empty:
-        return None
+        return None, None
 
     #use one column list
     feature_columns = [
@@ -33,7 +33,7 @@ def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> pd.Seri
         if c != TRACK_ID_COLUMN
     ]
     if not feature_columns:
-        return None
+        return None, None
 
     liked_centroid = liked_features[feature_columns].mean()
 
@@ -49,4 +49,6 @@ def build_user_profile(ratings: pd.DataFrame, features: pd.DataFrame) -> pd.Seri
     else:
         disliked_centroid = pd.Series(0.0, index=feature_columns) #zero vector
 
-    return ALPHA * liked_centroid - BETA * disliked_centroid
+    profile = ALPHA * liked_centroid - BETA * disliked_centroid
+    weights = (liked_centroid - disliked_centroid).abs()
+    return profile, weights
