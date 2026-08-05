@@ -12,7 +12,6 @@ RECOMMENDATION_FEATURES = [
     "valence",
     "tempo",
     "duration_ms",
-    "track_popularity",
 ]
 
 GENRES = ["edm", "latin", "pop", "r&b", "rap", "rock"]
